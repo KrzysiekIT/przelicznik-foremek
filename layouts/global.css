@@ -1,0 +1,5 @@
+@font-face {
+  font-family: "Delius";
+  src: local("Delius"),
+    url(~assets/delius-swash-caps.regular.ttf) format("truetype");
+}
