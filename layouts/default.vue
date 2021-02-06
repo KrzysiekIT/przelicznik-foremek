@@ -27,7 +27,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  min-width: 100vh;
+  min-width: 100vw;
   padding: 2rem;
 }
 
