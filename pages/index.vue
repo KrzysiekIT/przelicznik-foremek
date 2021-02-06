@@ -2,11 +2,11 @@
   <div>
     <header class="header">
       <h1 class="header__main">Przelicznik foremek</h1>
-      <h2 class="header__description">Kopiuj, wklej i gotowe!</h2>
+      <h2 class="header__description">Skopiuj przepis, wklej i gotowe!</h2>
     </header>
     <main>
       <fieldset>
-        <label class="settings__label settings__label--block">
+        <span class="settings__label settings__label--block">
           <label
             v-for="(action, index) in settings.actions.labels"
             :key="'action' + index"
@@ -20,15 +20,10 @@
             />
             <span class="settings__option-label">{{ action }}</span>
           </label>
-        </label>
-        <template
-          v-if="
-            settings.actions.labels[settings.actions.selectedIndex] ===
-              'Przelicz'
-          "
-        >
-          <label class="settings__label settings__label--block"
-            >z
+        </span>
+        <template v-if="chosen.action === 'Przelicz'">
+          <span class="settings__label settings__label--block">
+            z
             <label
               v-for="(form, index) in settings.forms.labels"
               :key="'form' + index"
@@ -42,9 +37,9 @@
               />
               <span class="settings__option-label">{{ form.from }}</span>
             </label>
-          </label>
-          <label class="settings__label settings__label--block"
-            >na
+          </span>
+          <span class="settings__label settings__label--block">
+            na
             <label
               v-for="(form, index) in settings.forms.labels"
               :key="'form' + index"
@@ -58,90 +53,87 @@
               />
               <span class="settings__option-label">{{ form.to }}</span>
             </label>
+          </span>
+          <label class="settings__label settings__label--block">
+            <span class="settings__text">
+              {{
+                settings.forms.labels[settings.forms.selectedSourceIndex]
+                  .boxLabel.source
+              }}
+            </span>
+            <div
+              v-for="(dimension, index) in settings.forms.labels[
+                settings.forms.selectedSourceIndex
+              ].args"
+              :key="dimension + index"
+            >
+              <input
+                type="number"
+                class="settings__input"
+                @keydown="numbersOnly($event)"
+                v-model.number="
+                  settings.forms.labels[settings.forms.selectedSourceIndex]
+                    .dimensions[dimension].source
+                "
+              /><span
+                v-if="
+                  index + 1 <
+                    settings.forms.labels[settings.forms.selectedSourceIndex]
+                      .args.length
+                "
+                >x</span
+              >
+            </div>
+          </label>
+          <label class="settings__label settings__label--block">
+            <span class="settings__text">
+              {{
+                settings.forms.labels[settings.forms.selectedTargetIndex]
+                  .boxLabel.target
+              }}
+            </span>
+            <div
+              v-for="(dimension, index) in settings.forms.labels[
+                settings.forms.selectedTargetIndex
+              ].args"
+              :key="dimension + index"
+            >
+              <input
+                type="number"
+                class="settings__input"
+                @keydown="numbersOnly($event)"
+                v-model.number="
+                  settings.forms.labels[settings.forms.selectedTargetIndex]
+                    .dimensions[dimension].target
+                "
+              /><span
+                v-if="
+                  index + 1 <
+                    settings.forms.labels[settings.forms.selectedTargetIndex]
+                      .args.length
+                "
+                >x</span
+              >
+            </div>
+          </label>
+        </template>
+        <template v-if="chosen.action === 'Przemnóż'">
+          <label class="settings__label settings__label--block">
+            <span class="settings__text">Współczynnik</span>
+            <input
+              type="number"
+              class="settings__input"
+              @keydown="numbersOnly($event)"
+              v-model.number="fraction"
+            />
           </label>
         </template>
       </fieldset>
-
-      <div
-        v-if="
-          settings.actions.labels[settings.actions.selectedIndex] === 'Przemnóż'
-        "
-      >
-        <div style="display: inline-block; width: 170px;">
-          Współczynnik:&nbsp;
-        </div>
-        <input v-model="fraction" class="input" />
-      </div>
-      <div class="forms_inputs" v-else>
-        <div>
-          <div
-            v-if="
-              settings.forms.labels[settings.forms.selectedSourceIndex].base ===
-                'foremka'
-            "
-          >
-            <div style="display: inline-block; width: 170px;">
-              Średnica&nbsp;podstawowa:&nbsp;
-            </div>
-            <input v-model="diameter.source" class="input" />
-          </div>
-          <div
-            v-if="
-              settings.forms.labels[settings.forms.selectedSourceIndex].base ===
-                'blacha'
-            "
-          >
-            <div style="display: inline-block; width: 170px;">
-              Wymiary&nbsp;podstawowe:&nbsp;
-            </div>
-            <input class="input" v-model="length.source.width" />x<input
-              class="input"
-              v-model="length.source.height"
-            />
-          </div>
-        </div>
-        <div>
-          <div
-            v-if="
-              settings.forms.labels[settings.forms.selectedTargetIndex].base ===
-                'foremka'
-            "
-          >
-            <div style="display: inline-block; width: 170px;">
-              Średnica&nbsp;docelowa:&nbsp;
-            </div>
-            <input
-              class="input"
-              placeholder="Średnica docelowa"
-              v-model="diameter.target"
-            />
-          </div>
-          <div
-            v-if="
-              settings.forms.labels[settings.forms.selectedTargetIndex].base ===
-                'blacha'
-            "
-          >
-            <div style="display: inline-block; width: 170px;">
-              Wymiary&nbsp;docelowe:&nbsp;
-            </div>
-            <input v-model="length.target.width" class="input" />x<input
-              class="input"
-              v-model="length.target.height"
-            />
-          </div>
-        </div>
-      </div>
       <table class="recipe__table">
-        <thead>
-          <tr>
-            <th class="recipe__description">Twój przepis</th>
-            <th class="recipe__description">Przepis po przeliczeniu</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td class="recipe__cell">
+            <th class="recipe__description">Twój przepis</th>
               <textarea
                 class="recipe__textarea recipe__textarea--input"
                 v-model="recipe"
@@ -149,6 +141,7 @@
               ></textarea>
             </td>
             <td class="recipe__cell">
+            <th class="recipe__description">Przepis po przeliczeniu</th>
               <output>
                 <textarea
                   class="recipe__textarea recipe__textarea--output"
@@ -160,13 +153,48 @@
         </tbody>
       </table>
     </main>
-    <footer></footer>
   </div>
 </template>
 
 <script>
 export default {
   computed: {
+    factor() {
+      const factor = {
+        Przelicz: () => {
+          return this.field.source / this.field.target;
+        },
+        Przemnóż: () => {
+          return this.fraction;
+        }
+      };
+      return factor[this.chosen.action]();
+    },
+    field() {
+      const source = this.countField(
+        this.settings.forms.labels[this.settings.forms.selectedSourceIndex]
+          .base,
+        this.settings.forms.labels[
+          this.settings.forms.selectedSourceIndex
+        ].args.map(
+          dimension =>
+            this.settings.forms.labels[this.settings.forms.selectedSourceIndex]
+              .dimensions[dimension].source
+        )
+      );
+      const target = this.countField(
+        this.settings.forms.labels[this.settings.forms.selectedTargetIndex]
+          .base,
+        this.settings.forms.labels[
+          this.settings.forms.selectedTargetIndex
+        ].args.map(
+          dimension =>
+            this.settings.forms.labels[this.settings.forms.selectedTargetIndex]
+              .dimensions[dimension].target
+        )
+      );
+      return { source, target };
+    },
     newRecipe() {
       let newRecipe = JSON.parse(JSON.stringify(this.recipe));
       //const r = /\d+/g;
@@ -192,10 +220,28 @@ export default {
           newRecipe.slice(numbersArray[i]["index"]);
       }
       return newRecipe;
+    },
+    chosen() {
+      const { labels, selectedIndex } = this.settings.actions;
+      return {
+        action: labels[selectedIndex]
+      };
+    },
+    base() {
+      const {
+        labels,
+        selectedSourceIndex,
+        selectedTargetIndex
+      } = this.settings.forms;
+      return {
+        from: labels[selectedSourceIndex].base,
+        to: labels[selectedTargetIndex].base
+      };
     }
   },
   data() {
     return {
+      PI: Math.PI,
       settings: {
         actions: {
           labels: ["Przelicz", "Przemnóż"],
@@ -203,8 +249,42 @@ export default {
         },
         forms: {
           labels: [
-            { base: "foremka", from: "foremki", to: "foremkę" },
-            { base: "blacha", from: "blachy", to: "blachę" }
+            {
+              base: "tortownica",
+              from: "tortownicy",
+              to: "trotownicę",
+              boxLabel: {
+                source: "Średnica podstawowa",
+                target: "Średnica docelowa"
+              },
+              args: ["diameter"],
+              dimensions: {
+                diameter: {
+                  source: 1,
+                  target: 1
+                }
+              }
+            },
+            {
+              base: "blacha",
+              from: "blachy",
+              to: "blachę",
+              boxLabel: {
+                source: "Wymiary podstawowe",
+                target: "Wymiary docelowe"
+              },
+              args: ["length", "height"],
+              dimensions: {
+                length: {
+                  source: 1,
+                  target: 1
+                },
+                height: {
+                  source: 1,
+                  target: 1
+                }
+              }
+            }
           ],
           selectedSourceIndex: 0,
           selectedTargetIndex: 0
@@ -219,36 +299,54 @@ export default {
       length: {
         source: { width: 1, height: 1 },
         target: { width: 1, height: 1 }
-      },
-      tiramisu: false,
-      carbonarra: false
+      }
     };
   },
   methods: {
+    numbersOnly(event) {
+      const keyCode = event.key;
+      if (".,01234567890".includes(keyCode)) {
+        return;
+      }
+      if (["Delete", "Backspace"].includes(keyCode)) {
+        return;
+      }
+      event.preventDefault();
+    },
+    countField(figure, args) {
+      console.log(figure, args);
+      const field = {
+        tortownica: diameter => {
+          return (this.PI * diameter ** 2) / 4;
+        },
+        blacha: (length, height) => {
+          return length * height;
+        }
+      };
+      return field[figure](...args);
+    },
     getFieldSource() {
       const forms = this.settings.forms;
-      if (forms.labels[forms.selectedSourceIndex].base === "foremka") {
-        return (Math.PI * this.diameter.source * this.diameter.source * 1) / 4;
+      if (forms.labels[forms.selectedSourceIndex].base === "tortownica") {
+        return (this.PI * this.diameter.source * this.diameter.source * 1) / 4;
       } else {
         return this.length.source.width * this.length.source.height;
       }
     },
     getFieldTarget() {
       const forms = this.settings.forms;
-      if (forms.labels[forms.selectedTargetIndex].base === "foremka") {
-        return (Math.PI * this.diameter.target * this.diameter.target * 1) / 4;
+      if (forms.labels[forms.selectedTargetIndex].base === "tortownica") {
+        return (this.PI * this.diameter.target * this.diameter.target * 1) / 4;
       } else {
         return this.length.target.width * this.length.target.height;
       }
     },
     fitForm() {
-      if (
-        this.settings.actions.labels[this.settings.actions.selectedIndex] ===
-        "Przemnóż"
-      ) {
-        return +this.fraction;
-      }
-      return this.getFieldTarget() / this.getFieldSource();
+      const fractions = {
+        Przemnóż: +this.fraction,
+        Przelicz: this.field.target / this.field.source
+      };
+      return fractions[this.chosen.action];
     },
     testFraction(text) {
       const conditions = Array.from("⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞");
@@ -279,7 +377,7 @@ export default {
       if (oldNumber.includes("%")) {
         type = "percent";
       } else if (oldNumber.includes("/")) {
-        type = "fracion";
+        type = "fraction";
       } else if (oldNumber.includes(",")) {
         oldNumber = oldNumber.replace(",", ".");
         type = "number";
@@ -295,7 +393,7 @@ export default {
             processedNumber = oldNumber;
           }
           break;
-        case "fracion":
+        case "fraction":
           {
             const parts = oldNumber.split("/");
             if (parts[1] === "") {
@@ -357,7 +455,7 @@ export default {
   text-align: center;
 }
 .header {
-  margin: 3rem 0 3rem 0;
+  margin: 1rem 0 3rem 0;
 }
 .header__main {
   position: relative;
@@ -385,9 +483,9 @@ export default {
 .settings__radio:checked + .settings__option-label::before {
   transform: scale(0.9);
   padding: 0.15rem;
-  border: 0.375rem solid #ffb6c1;
-  box-shadow: 0 0 0 0.1875rem #00f;
-  background: #00f;
+  border: 0.375rem solid #add8e6;
+  box-shadow: 0 0 0 0.1875rem #004;
+  background: #004;
 }
 .settings__option-label {
   display: flex;
@@ -402,33 +500,76 @@ export default {
   height: 1.6875rem;
   width: 1.6875rem;
   margin-right: 0.9375rem;
-  border: 0.15rem solid #008;
+  border: 0.15rem solid #004;
   border-radius: 50%;
   transition: all 0.25s linear;
 }
 .settings__label {
   font-size: 2rem;
+  margin: 1rem;
 }
 .settings__label--block {
+  align-items: center;
   display: flex;
 }
 .settings__label--inline {
   display: inline-block;
   margin-left: 1rem;
 }
+.settings__input {
+  background-color: transparent;
+  border: 0.1rem solid #004;
+  color: #004;
+  font-family: "Delius";
+  font-size: 2rem;
+  font-weight: 800;
+  padding: 0.5rem;
+  width: 4.4rem;
+}
+.settings__text {
+  margin-right: 1rem;
+}
 .recipe__table {
   width: 100%;
 }
+.recipe__cell {
+  text-align: center;
+}
 .recipe__description {
+  display: block;
   font-size: 2rem;
 }
 .recipe__textarea {
   background-color: transparent;
-  border: 0.1rem solid #008;
-  font-size: 1.5rem;
+  border: 0.1rem solid #004;
+  color: #004;
+  font-family: "Delius";
+  font-size: 2rem;
   min-height: 50vh;
   padding: 1rem;
   resize: none;
   width: 100%;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+fieldset {
+  border: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .recipe__cell, .recipe__description {
+    display: block;
+  }
 }
 </style>

@@ -6,9 +6,10 @@
 
 <style>
 html {
-  font-family: "Delius", "Source Sans Pro", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Delius", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 10px;
+  color: #004;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -18,8 +19,14 @@ html {
 }
 
 body {
-  background-color: #ffb6c1;
-  color: #00f;
+  background-image: linear-gradient(
+      to right,rgba(255,255,255,0.8),rgba(255,255,255,0.8)
+    ),
+    url("~@/assets/cooking.jpg");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   min-width: 100vh;
   padding: 2rem;
 }
@@ -29,5 +36,15 @@ body {
 *::after {
   box-sizing: border-box;
   margin: 0;
+}
+
+
+@media only screen and (max-width: 600px) {
+  body {
+  background-image: linear-gradient(
+      to right,rgba(255,255,255,0.8),rgba(255,255,255,0.8)
+    ),
+    url("~@/assets/cooking-mobile.jpg");
+}
 }
 </style>
