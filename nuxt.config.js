@@ -16,7 +16,11 @@ export default {
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { hid: "description", name: "description", content: "Przelicznik foremek – aby gotującym żyło się łatwiej! :)" }
+      {
+        hid: "description",
+        name: "description",
+        content: "Przelicznik foremek – aby gotującym żyło się łatwiej! :)"
+      }
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
@@ -35,6 +39,10 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/google-analytics", "@nuxtjs/sitemap"],
+
+  sitemap: {
+    hostname: "https://przelicznikforemek.pl"
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {}
