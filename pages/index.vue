@@ -254,8 +254,8 @@ export default {
               from: "tortownicy",
               to: "trotownicę",
               boxLabel: {
-                source: "Średnica podstawowa",
-                target: "Średnica docelowa"
+                source: "Średnica z przepisu",
+                target: "Średnica Twojej foremki"
               },
               args: ["diameter"],
               dimensions: {
@@ -270,8 +270,8 @@ export default {
               from: "blachy",
               to: "blachę",
               boxLabel: {
-                source: "Wymiary podstawowe",
-                target: "Wymiary docelowe"
+                source: "Wymiary z przepisu",
+                target: "Wymiary Twojej blachy"
               },
               args: ["length", "height"],
               dimensions: {
